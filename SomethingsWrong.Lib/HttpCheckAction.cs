@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 
 namespace SomethingsWrong.Lib
@@ -8,8 +9,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _url;
         private readonly string _expectedString;
 
-        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds)
-            : base(name, lightAlarmDurationInSeconds)
+        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds, FileInfo soundFile)
+            : base(name, lightAlarmDurationInSeconds, soundFile)
         {
             _url = url;
             _expectedString = expectedString;

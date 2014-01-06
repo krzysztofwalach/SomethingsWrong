@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Xml;
 
@@ -9,8 +10,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _uriToCheck;
         private readonly string _xmlNodeToVerify;
 
-        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds)
-            : base(name, lightAlarmDurationInSeconds)
+        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds, FileInfo soundFile)
+            : base(name, lightAlarmDurationInSeconds, soundFile)
         {
             _uriToCheck = uriToCheck;
             _xmlNodeToVerify = xmlNodeToVerify;

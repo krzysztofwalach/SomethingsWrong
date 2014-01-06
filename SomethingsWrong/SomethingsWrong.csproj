@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlertType.cs" />
+    <Compile Include="SoundAction.cs" />
     <Compile Include="FlashLightAction.cs" />
     <Compile Include="AlertAction.cs" />
     <Compile Include="Program.cs" />
