@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HttpCheckAction.cs" />
-    <Compile Include="IMonitorAction.cs" />
+    <Compile Include="MonitorAction.cs" />
     <Compile Include="TCBuildStatusCheckAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -8,7 +8,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _url;
         private readonly string _expectedString;
 
-        public HttpCheckAction(Uri url, string expectedString, string name) : base(name)
+        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds)
+            : base(name, lightAlarmDurationInSeconds)
         {
             _url = url;
             _expectedString = expectedString;
@@ -25,7 +26,7 @@ namespace SomethingsWrong.Lib
 
         public override string GetActionDetails()
         {
-            return string.Format("Veryfying HTTP status and returned html at {0}", _url);
+            return string.Format("Veryfying HTTP status and html at {0}", _url);
         }
     }
 }

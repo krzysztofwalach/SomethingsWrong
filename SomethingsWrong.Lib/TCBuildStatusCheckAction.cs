@@ -9,7 +9,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _uriToCheck;
         private readonly string _xmlNodeToVerify;
 
-        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name) : base(name)
+        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds)
+            : base(name, lightAlarmDurationInSeconds)
         {
             _uriToCheck = uriToCheck;
             _xmlNodeToVerify = xmlNodeToVerify;
