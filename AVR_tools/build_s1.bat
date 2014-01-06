@@ -1,0 +1,1 @@
+avr-gcc -mmcu=attiny2313 -Wall -Os -o busygeek.elf busygeek.c

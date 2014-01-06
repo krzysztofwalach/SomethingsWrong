@@ -1,0 +1,1 @@
+avrdude -p attiny2313 -c avrisp -P com19 -e -U flash:w:main.hex -b 19200

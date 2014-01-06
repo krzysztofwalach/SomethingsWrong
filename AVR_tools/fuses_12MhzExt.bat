@@ -1,0 +1,1 @@
+avrdude -p attiny2313 -c avrisp -P com19 -e -b 19200 -U lfuse:w:0xce:m -U hfuse:w:0x9f:m
