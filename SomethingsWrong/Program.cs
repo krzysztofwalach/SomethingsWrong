@@ -1,4 +1,5 @@
-﻿using SomethingsWrong.Lib;
+﻿using System.Configuration;
+using SomethingsWrong.Lib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,13 +10,13 @@ namespace SomethingsWrong
 {
     class Program
     {
-        const string relativePathToLibDir = @"..\..\..\..\Lib";
-        
-        const int checkIntervalInSeconds = 15;
+        private const string RelativePathToLibDir = @"..\..\..\..\Lib";
+        private const string SwControllerFilename = "somethingswrong_controller.exe";
+        private const int CheckIntervalInSeconds = 15;
 
-        const int buildFailedLightAlarmDurationInSeconds = 300;
-        const int httpFailedLightAlarmDurationInSeconds = 20;
-        const int standupTimeLightAlarmDurationInSeconds = 20;
+        private static readonly int BuildFailedLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["buildFailedLightAlarmDurationInSeconds"]);
+        static readonly int HttpFailedLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["httpFailedLightAlarmDurationInSeconds"]);
+        static readonly int StandupTimeLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["standupTimeLightAlarmDurationInSeconds"]);
 
         static void Main()
         {
@@ -51,42 +52,60 @@ namespace SomethingsWrong
                 return;
             }
 
-            IList<MonitorAction> monitorActions = new List<MonitorAction>
+            IList<MonitorAction> monitorActions = new List<MonitorAction>();
+            if (bool.Parse(ConfigurationManager.AppSettings["EnableTCBuildCheck"]))
             {
-                new TCBuildStatusCheckAction(
-                                    new Uri("http://pllod-v-1abb002.pl.abb.com:7080/guestAuth/app/rest/builds/?locator=buildType:Inside_CiAndDeployToAmazon"),
-                                    "/builds/build[1]",
-                                    "TC: Inside+",
-                                    buildFailedLightAlarmDurationInSeconds,
-                                    buildAlarmSoundFile,
-                                    false),
-
-                //new HttpCheckAction(new Uri("https://insideplus.dev.abb.com"),
-                //                    "Copyright 2013 ABB",
-                //                    "https://insideplus.dev.abb.com",
-                //                    httpFailedLightAlarmDurationInSeconds,
-                //                    httpAlarmSoundFile,
-                //                    true),
-
-                new HttpCheckAction(new Uri("http://localhost:8888"),
-                                    "Blah blah!",
-                                    "LOCAL http test",
-                                    httpFailedLightAlarmDurationInSeconds,
-                                    httpAlarmSoundFile,
-                                    true),
-
-                new TimeCheckAction("Standup time check",
-                                    standupTimeLightAlarmDurationInSeconds,
-                                    new TimeSpan(1, 11, 0),
-                                    standupSoundFile,
-                                    false)
-            };
-
-            IList<AlertAction> alertActions = new List<AlertAction>
+                monitorActions.Add(
+                    new TCBuildStatusCheckAction(
+                        new Uri("http://pllod-v-1abb002.pl.abb.com:7080/guestAuth/app/rest/builds/?locator=buildType:Inside_CiAndDeployToAmazon"),
+                        "/builds/build[1]",
+                        "TC: Inside+",
+                        BuildFailedLightAlarmDurationInSeconds,
+                        buildAlarmSoundFile,
+                        false));
+            }
+            if (bool.Parse(ConfigurationManager.AppSettings["EnableDevHTTPCheck"]))
             {
-                new FlashLightAction(controllerFile),
-                new SoundAction()
-            };            
+                monitorActions.Add(
+                    new HttpCheckAction(new Uri("https://insideplus.dev.abb.com/Monitoring/getheartbeat"),
+                        "I am alive!",
+                        "https://insideplus.dev.abb.com",
+                        HttpFailedLightAlarmDurationInSeconds,
+                        httpAlarmSoundFile,
+                        true));
+                //monitorActions.Add(
+                //    new HttpCheckAction(new Uri("https://insideplus.local.abb.com/Monitoring/getheartbeat"),
+                //        "I am alive!",
+                //        "https://insideplus.local.abb.com",
+                //        HttpFailedLightAlarmDurationInSeconds,
+                //        httpAlarmSoundFile,
+                //        true));
+            }
+            if (bool.Parse(ConfigurationManager.AppSettings["EnableStandupCheck"]))
+            {
+                var standupTime = new TimeSpan(
+                    int.Parse(ConfigurationManager.AppSettings["StandupHour"]),
+                    int.Parse(ConfigurationManager.AppSettings["StandupMinutes"]),
+                    0);
+
+
+                monitorActions.Add(
+                    new TimeCheckAction("Standup time check",
+                        StandupTimeLightAlarmDurationInSeconds,
+                        standupTime,
+                        standupSoundFile,
+                        false));
+            }
+
+            IList<AlertAction> alertActions = new List<AlertAction>();
+            if (bool.Parse(ConfigurationManager.AppSettings["EnableFlashLight"]))
+            {
+                alertActions.Add(new FlashLightAction(controllerFile));
+            }
+            if (bool.Parse(ConfigurationManager.AppSettings["EnableSounds"]))
+            {
+                alertActions.Add(new SoundAction());
+            }          
 
             var detector = new WrongnessDetector(monitorActions, alertActions);
             while (true)
@@ -99,23 +118,22 @@ namespace SomethingsWrong
                 {
                     Console.WriteLine(ex.Message);
                 }
-                Thread.Sleep(checkIntervalInSeconds * 1000);
+                Thread.Sleep(CheckIntervalInSeconds * 1000);
             }
         }
 
         private static FileInfo GetSoundFilename(string filename)
         {
             string execPath = Assembly.GetExecutingAssembly().Location;
-            string path = Path.Combine(execPath, relativePathToLibDir, filename);
+            string path = Path.Combine(execPath, RelativePathToLibDir, filename);
             FileInfo fi = new FileInfo(path);
             return fi;
         }
 
         private static FileInfo GetControllerFile()
         {
-            string swControllerFilename = "somethingswrong_controller.exe";
             string execPath = Assembly.GetExecutingAssembly().Location;
-            string pathToSWController = Path.Combine(execPath, relativePathToLibDir, swControllerFilename);
+            string pathToSWController = Path.Combine(execPath, RelativePathToLibDir, SwControllerFilename);
             FileInfo fi = new FileInfo(pathToSWController);            
             return fi;
         }
