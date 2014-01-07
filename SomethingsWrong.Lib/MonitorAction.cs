@@ -8,12 +8,14 @@ namespace SomethingsWrong.Lib
         public int LightAlarmDurationInSeconds { get; private set; }
         public bool MarkedAsFailing {get; set;}
         public FileInfo SoundFile { get; private set; }
+        public bool FailAtNetworkException { get; private set; }
 
-        public MonitorAction(string name, int lightAlarmDurationInSeconds, FileInfo soundFile)
+        public MonitorAction(string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
         {
             Name = name;
             LightAlarmDurationInSeconds = lightAlarmDurationInSeconds;
             SoundFile = soundFile;
+            FailAtNetworkException = failAtNetworkException;
         }
 
         public abstract bool GetStatus();

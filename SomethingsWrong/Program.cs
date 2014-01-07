@@ -23,13 +23,15 @@ namespace SomethingsWrong
             if (!controllerFile.Exists)
             {
                 Console.WriteLine("Something's Wrong controller file cannot be found at: " + controllerFile.FullName);
+                Console.ReadKey();
                 return;
             }
 
-            FileInfo buildAlarmSoundFile = GetSoundFilename("builAlarm.wav");
+            FileInfo buildAlarmSoundFile = GetSoundFilename("buildAlarm.wav");
             if (!buildAlarmSoundFile.Exists)
             {
                 Console.WriteLine("Build alarm sound file do not exist: " + buildAlarmSoundFile.FullName);
+                Console.ReadKey();
                 return;
             }
 
@@ -37,6 +39,7 @@ namespace SomethingsWrong
             if (!httpAlarmSoundFile.Exists)
             {
                 Console.WriteLine("HTTP alarm sound file do not exist: " + httpAlarmSoundFile.FullName);
+                Console.ReadKey();
                 return;
             }
 
@@ -44,6 +47,7 @@ namespace SomethingsWrong
             if (!standupSoundFile.Exists)
             {
                 Console.WriteLine("Standup sound file do not exist: " + standupSoundFile.FullName);
+                Console.ReadKey();
                 return;
             }
 
@@ -54,31 +58,35 @@ namespace SomethingsWrong
                                     "/builds/build[1]",
                                     "TC: Inside+",
                                     buildFailedLightAlarmDurationInSeconds,
-                                    buildAlarmSoundFile),
+                                    buildAlarmSoundFile,
+                                    false),
 
                 //new HttpCheckAction(new Uri("https://insideplus.dev.abb.com"),
                 //                    "Copyright 2013 ABB",
-                //                    "https://insideplus.dev.abb.com")
+                //                    "https://insideplus.dev.abb.com",
+                //                    httpFailedLightAlarmDurationInSeconds,
+                //                    httpAlarmSoundFile,
+                //                    true),
 
                 new HttpCheckAction(new Uri("http://localhost:8888"),
                                     "Blah blah!",
                                     "LOCAL http test",
                                     httpFailedLightAlarmDurationInSeconds,
-                                    httpAlarmSoundFile),
+                                    httpAlarmSoundFile,
+                                    true),
 
                 new TimeCheckAction("Standup time check",
                                     standupTimeLightAlarmDurationInSeconds,
-                                    new TimeSpan(0, 36, 0),
-                                    standupSoundFile)
+                                    new TimeSpan(1, 11, 0),
+                                    standupSoundFile,
+                                    false)
             };
 
             IList<AlertAction> alertActions = new List<AlertAction>
             {
                 new FlashLightAction(controllerFile),
                 new SoundAction()
-            };
-
-            
+            };            
 
             var detector = new WrongnessDetector(monitorActions, alertActions);
             while (true)

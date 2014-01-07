@@ -10,8 +10,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _uriToCheck;
         private readonly string _xmlNodeToVerify;
 
-        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds, FileInfo soundFile)
-            : base(name, lightAlarmDurationInSeconds, soundFile)
+        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
         {
             _uriToCheck = uriToCheck;
             _xmlNodeToVerify = xmlNodeToVerify;

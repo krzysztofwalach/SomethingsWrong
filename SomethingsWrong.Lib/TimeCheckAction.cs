@@ -9,8 +9,8 @@ namespace SomethingsWrong.Lib
         private DateTime? _nextAlarmNoEarlierThan;
         private readonly TimeSpan _time;
 
-        public TimeCheckAction(string name, int lightAlarmDurationInSeconds, TimeSpan time, FileInfo soundFile)
-            : base(name, lightAlarmDurationInSeconds, soundFile)
+        public TimeCheckAction(string name, int lightAlarmDurationInSeconds, TimeSpan time, FileInfo soundFile, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
         {
             _time = time;
         }
@@ -21,7 +21,6 @@ namespace SomethingsWrong.Lib
             
             if(!PassedNextAlarmTime())
             {
-                Console.WriteLine("Too early for next time alarm");
                 return true;
             }
 

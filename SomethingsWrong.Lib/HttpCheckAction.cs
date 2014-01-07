@@ -9,8 +9,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _url;
         private readonly string _expectedString;
 
-        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds, FileInfo soundFile)
-            : base(name, lightAlarmDurationInSeconds, soundFile)
+        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
         {
             _url = url;
             _expectedString = expectedString;

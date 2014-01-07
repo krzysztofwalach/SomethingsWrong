@@ -2,6 +2,7 @@
 using SomethingsWrong.Lib;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SomethingsWrong
 {
@@ -53,13 +54,29 @@ namespace SomethingsWrong
                 }
 
             }
+            catch(WebException ex)
+            {
+                if(!action.FailAtNetworkException)
+                {
+                    Console.WriteLine("skipping WebException for " + action.Name);
+                    passed = true;
+                }
+                else
+                {
+                    wrongnessMessage = string.Format("Somethings Wrong! {0} IS FAILING\n" +
+                                                            "Found problem when: {1}\n" +
+                                                            "details: {2}",
+                                                            action.Name, action.GetActionDetails(), ex.Message);
+                    passed = false;
+                }
+            }
             catch (Exception ex)
             {
                 wrongnessMessage = string.Format("Somethings Wrong! {0} IS FAILING\n" +
                                                             "Found problem when: {1}\n" +
                                                             "details: {2}",
                                                             action.Name, action.GetActionDetails(), ex.Message);
-                passed = false;
+                passed = false;                
             }
 
             if (!passed)
@@ -77,7 +94,7 @@ namespace SomethingsWrong
 
             if(action.MarkedAsFailing)
             {
-                Console.WriteLine(action.Name + " stopped to fail");
+                Console.WriteLine(action.Name + " stopped failing");
                 action.MarkedAsFailing = false;
             }            
             return true;
