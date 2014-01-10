@@ -76,7 +76,7 @@ namespace SomethingsWrong
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Failed to execute controller process, details: " + ex);
+                MultiLogger.Error("Failed to execute controller process, details: " + ex);
             }            
         }
     }

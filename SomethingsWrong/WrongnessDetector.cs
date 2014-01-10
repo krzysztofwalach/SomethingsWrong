@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using SomethingsWrong.Lib;
+﻿using SomethingsWrong.Lib;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -10,7 +9,6 @@ namespace SomethingsWrong
     {
         private readonly IList<MonitorAction> _monitorActions;
         private readonly IList<AlertAction> _alertActions;
-        private const int defaultAlertDurationInSeconds = 60;
 
         public WrongnessDetector(IList<MonitorAction> monitorActions, IList<AlertAction> alertActions)
         {
@@ -32,7 +30,7 @@ namespace SomethingsWrong
 
             if(allActionsPassed)
             {
-                Console.WriteLine("Everything is OK");
+                MultiLogger.Debug("Everything is OK");
                 StopRunningAlerts();
             }
         }
@@ -58,7 +56,7 @@ namespace SomethingsWrong
             {
                 if(!action.FailAtNetworkException)
                 {
-                    Console.WriteLine("skipping WebException for " + action.Name);
+                    MultiLogger.Debug("skipping WebException for " + action.Name);
                     passed = true;
                 }
                 else
@@ -83,18 +81,18 @@ namespace SomethingsWrong
             {
                 if (!action.MarkedAsFailing) //first fail
                 {
-                    Console.WriteLine(action.Name + " started to fail");
+                    MultiLogger.MonitoredAppFail(action.Name + " started to fail");
                     action.MarkedAsFailing = true;
-                    Console.WriteLine(wrongnessMessage);
+                    MultiLogger.MonitoredAppFail(wrongnessMessage);
                     StartAlerts(action);
                 }
-                Console.WriteLine(action.GetActionDetails() + " continue failing");
+                MultiLogger.MonitoredAppFail(action.GetActionDetails() + " continue failing");
                 return false;
             }
 
             if(action.MarkedAsFailing)
             {
-                Console.WriteLine(action.Name + " stopped failing");
+                MultiLogger.MonitoredAppFail(action.Name + " stopped failing");
                 action.MarkedAsFailing = false;
             }            
             return true;

@@ -10,7 +10,7 @@ namespace SomethingsWrong.Lib
         public FileInfo SoundFile { get; private set; }
         public bool FailAtNetworkException { get; private set; }
 
-        public MonitorAction(string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
+        protected MonitorAction(string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
         {
             Name = name;
             LightAlarmDurationInSeconds = lightAlarmDurationInSeconds;

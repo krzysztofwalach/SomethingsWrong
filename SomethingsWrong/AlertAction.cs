@@ -1,10 +1,9 @@
 ﻿using SomethingsWrong.Lib;
-using System;
 namespace SomethingsWrong
 {
     public abstract class AlertAction
     {
-        public AlertAction(AlertType type)
+        protected AlertAction(AlertType type)
         {
             AlertType = type;
         }

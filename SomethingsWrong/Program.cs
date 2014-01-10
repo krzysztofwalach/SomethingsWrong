@@ -23,7 +23,7 @@ namespace SomethingsWrong
             FileInfo controllerFile = GetControllerFile();
             if (!controllerFile.Exists)
             {
-                Console.WriteLine("Something's Wrong controller file cannot be found at: " + controllerFile.FullName);
+                MultiLogger.Error("Something's Wrong controller file cannot be found at: " + controllerFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -31,7 +31,7 @@ namespace SomethingsWrong
             FileInfo buildAlarmSoundFile = GetSoundFilename("buildAlarm.wav");
             if (!buildAlarmSoundFile.Exists)
             {
-                Console.WriteLine("Build alarm sound file do not exist: " + buildAlarmSoundFile.FullName);
+                MultiLogger.Error("Build alarm sound file do not exist: " + buildAlarmSoundFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -39,7 +39,7 @@ namespace SomethingsWrong
             FileInfo httpAlarmSoundFile = GetSoundFilename("httpAlarm.wav");
             if (!httpAlarmSoundFile.Exists)
             {
-                Console.WriteLine("HTTP alarm sound file do not exist: " + httpAlarmSoundFile.FullName);
+                MultiLogger.Error("HTTP alarm sound file do not exist: " + httpAlarmSoundFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -47,7 +47,7 @@ namespace SomethingsWrong
             FileInfo standupSoundFile = GetSoundFilename("standupAlarm.wav");
             if (!standupSoundFile.Exists)
             {
-                Console.WriteLine("Standup sound file do not exist: " + standupSoundFile.FullName);
+                MultiLogger.Error("Standup sound file do not exist: " + standupSoundFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -67,7 +67,7 @@ namespace SomethingsWrong
             if (bool.Parse(ConfigurationManager.AppSettings["EnableDevHTTPCheck"]))
             {
                 monitorActions.Add(
-                    new HttpCheckAction(new Uri("https://insideplus.dev.abb.com/Monitoring/getheartbeat"),
+                    new HttpCheckAction(new Uri("https://insideplus2.dev.abb.com/Monitoring/getheartbeat"),
                         "I am alive!",
                         "https://insideplus.dev.abb.com",
                         HttpFailedLightAlarmDurationInSeconds,
@@ -113,13 +113,13 @@ namespace SomethingsWrong
                 var date = DateTime.Now;
                 if (Calendar.IsHoliday(date))
                 {
-                    Console.WriteLine("It's holidays day, sleeping for 10 minutes...");
+                    MultiLogger.Info("It's holidays day, sleeping for 10 minutes...");
                     Thread.Sleep(1000 * 60 * 10);
                     continue;
                 }
                 if (!Calendar.TimeIsInsideWorkingHours(date))
                 {
-                    Console.WriteLine("The time is outside office hours, sleeping for 10 minutes...");
+                    MultiLogger.Info("The time is outside office hours, sleeping for 10 minutes...");
                     Thread.Sleep(1000 * 60 * 10);
                     continue;
                 }
@@ -130,7 +130,7 @@ namespace SomethingsWrong
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    MultiLogger.Error(ex.Message);
                 }
                 Thread.Sleep(CheckIntervalInSeconds * 1000);
             }
