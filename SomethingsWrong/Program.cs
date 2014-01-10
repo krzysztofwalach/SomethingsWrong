@@ -110,6 +110,20 @@ namespace SomethingsWrong
             var detector = new WrongnessDetector(monitorActions, alertActions);
             while (true)
             {
+                var date = DateTime.Now;
+                if (Calendar.IsHoliday(date))
+                {
+                    Console.WriteLine("It's holidays day, sleeping for 10 minutes...");
+                    Thread.Sleep(1000 * 60 * 10);
+                    continue;
+                }
+                if (!Calendar.TimeIsInsideWorkingHours(date))
+                {
+                    Console.WriteLine("The time is outside office hours, sleeping for 10 minutes...");
+                    Thread.Sleep(1000 * 60 * 10);
+                    continue;
+                }
+
                 try
                 {
                     detector.CheckAll();
