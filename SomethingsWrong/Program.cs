@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Linq;
 using SomethingsWrong.Lib;
 using System;
 using System.Collections.Generic;
@@ -44,10 +45,10 @@ namespace SomethingsWrong
                 return;
             }
 
-            FileInfo standupSoundFile = GetSoundFilename("standupAlarm.wav");
-            if (!standupSoundFile.Exists)
+            var standupSoundFiles = GetSoundsFilesFromSubDirectory("standupAlarms");
+            if (!standupSoundFiles.Any())
             {
-                MultiLogger.Error("Standup sound file do not exist: " + standupSoundFile.FullName);
+                MultiLogger.Error("Didn't find any standup sound files in subdirectory /standupAlarms");
                 Console.ReadKey();
                 return;
             }
@@ -61,7 +62,7 @@ namespace SomethingsWrong
                         "/builds/build[1]",
                         "TC: Inside+",
                         BuildFailedLightAlarmDurationInSeconds,
-                        buildAlarmSoundFile,
+                        new List<FileInfo> {buildAlarmSoundFile},
                         false));
             }
             if (bool.Parse(ConfigurationManager.AppSettings["EnableDevHTTPCheck"]))
@@ -71,7 +72,7 @@ namespace SomethingsWrong
                         "I am alive!",
                         "https://insideplus.dev.abb.com",
                         HttpFailedLightAlarmDurationInSeconds,
-                        httpAlarmSoundFile,
+                        new List<FileInfo> {httpAlarmSoundFile},
                         true));
                 //monitorActions.Add(
                 //    new HttpCheckAction(new Uri("https://insideplus.local.abb.com/Monitoring/getheartbeat"),
@@ -93,7 +94,7 @@ namespace SomethingsWrong
                     new TimeCheckAction("Standup time check",
                         StandupTimeLightAlarmDurationInSeconds,
                         standupTime,
-                        standupSoundFile,
+                        standupSoundFiles,
                         false));
             }
 
@@ -142,6 +143,15 @@ namespace SomethingsWrong
             string path = Path.Combine(execPath, RelativePathToLibDir, filename);
             FileInfo fi = new FileInfo(path);
             return fi;
+        }
+
+        private static IList<FileInfo> GetSoundsFilesFromSubDirectory(string subDirectory)
+        {
+            string execPath = Assembly.GetExecutingAssembly().Location;
+            string path = Path.Combine(execPath, RelativePathToLibDir, subDirectory);
+            string[] filePaths = Directory.GetFiles(path, "*.wav");
+            var fis = filePaths.Select(fi => new FileInfo(fi)).ToList();
+            return fis;
         }
 
         private static FileInfo GetControllerFile()

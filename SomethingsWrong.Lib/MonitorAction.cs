@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.IO;
 namespace SomethingsWrong.Lib
 {
@@ -7,14 +8,14 @@ namespace SomethingsWrong.Lib
         public string Name {get; private set;}
         public int LightAlarmDurationInSeconds { get; private set; }
         public bool MarkedAsFailing {get; set;}
-        public FileInfo SoundFile { get; private set; }
+        public IList<FileInfo> SoundFiles { get; private set; }
         public bool FailAtNetworkException { get; private set; }
 
-        protected MonitorAction(string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
+        protected MonitorAction(string name, int lightAlarmDurationInSeconds, IList<FileInfo> soundFiles, bool failAtNetworkException)
         {
             Name = name;
             LightAlarmDurationInSeconds = lightAlarmDurationInSeconds;
-            SoundFile = soundFile;
+            SoundFiles = soundFiles;
             FailAtNetworkException = failAtNetworkException;
         }
 

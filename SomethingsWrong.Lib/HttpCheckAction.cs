@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -9,8 +10,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _url;
         private readonly string _expectedString;
 
-        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
-            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
+        public HttpCheckAction(Uri url, string expectedString, string name, int lightAlarmDurationInSeconds, IList<FileInfo> soundFiles, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFiles, failAtNetworkException)
         {
             _url = url;
             _expectedString = expectedString;

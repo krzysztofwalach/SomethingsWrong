@@ -9,7 +9,7 @@ namespace SomethingsWrong.Lib
 
         public static bool TimeIsInsideWorkingHours(DateTime time)
         {
-            return new TimeSpan(8, 30, 0) <= time.TimeOfDay && time.TimeOfDay <= new TimeSpan(17, 0, 0);
+            return new TimeSpan(8, 30, 0) <= time.TimeOfDay && time.TimeOfDay <= new TimeSpan(18, 0, 0);
         }
 
         public static bool IsHoliday(DateTime date)

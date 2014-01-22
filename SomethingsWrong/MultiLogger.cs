@@ -17,13 +17,13 @@ namespace SomethingsWrong
 
         public static void Error(string message)
         {
-            WriteToConsole(message, ConsoleColor.Red);
+            WriteToConsole(message, color: ConsoleColor.Red);
             Logger.Error(message);
         }
 
         public static void MonitoredAppFail(string message)
         {
-            WriteToConsole(message, ConsoleColor.Yellow);
+            WriteToConsole(message, color: ConsoleColor.Yellow);
             Logger.Info(message);
         }
 
@@ -31,7 +31,7 @@ namespace SomethingsWrong
         {
             if (ConsoleLoggingLevel == "debug")
             {
-                WriteToConsole(message, ConsoleColor.DarkGray);
+                WriteToConsole(message, color: ConsoleColor.DarkGray);
             }
             Logger.Debug(message);
         }
@@ -43,7 +43,9 @@ namespace SomethingsWrong
             {
                 Console.ForegroundColor = color.Value;
             }
+            
             Console.WriteLine(message);
+            
             if (color != null)
             {
                 Console.ResetColor();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Xml;
@@ -10,8 +11,8 @@ namespace SomethingsWrong.Lib
         private readonly Uri _uriToCheck;
         private readonly string _xmlNodeToVerify;
 
-        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds, FileInfo soundFile, bool failAtNetworkException)
-            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
+        public TCBuildStatusCheckAction(Uri uriToCheck, string xmlNodeToVerify, string name, int lightAlarmDurationInSeconds, IList<FileInfo> soundFiles, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFiles, failAtNetworkException)
         {
             _uriToCheck = uriToCheck;
             _xmlNodeToVerify = xmlNodeToVerify;

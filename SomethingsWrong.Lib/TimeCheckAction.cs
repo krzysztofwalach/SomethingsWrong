@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SomethingsWrong.Lib
@@ -8,14 +9,14 @@ namespace SomethingsWrong.Lib
         private DateTime? _nextAlarmNoEarlierThan;
         private readonly TimeSpan _time;
 
-        public TimeCheckAction(string name, int lightAlarmDurationInSeconds, TimeSpan time, FileInfo soundFile, bool failAtNetworkException)
-            : base(name, lightAlarmDurationInSeconds, soundFile, failAtNetworkException)
+        public TimeCheckAction(string name, int lightAlarmDurationInSeconds, TimeSpan time, IList<FileInfo> soundFiles, bool failAtNetworkException)
+            : base(name, lightAlarmDurationInSeconds, soundFiles, failAtNetworkException)
         {
             _time = time;
         }
 
         public override bool GetStatus()
-        {   
+        {
             //return false == RUN ALARM
             
             if(!PassedNextAlarmTime())

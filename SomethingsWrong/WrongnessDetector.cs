@@ -30,7 +30,7 @@ namespace SomethingsWrong
 
             if(allActionsPassed)
             {
-                MultiLogger.Debug("Everything is OK");
+                MultiLogger.Debug("Everything's OK");
                 StopRunningAlerts();
             }
         }
@@ -61,7 +61,7 @@ namespace SomethingsWrong
                 }
                 else
                 {
-                    wrongnessMessage = string.Format("Somethings Wrong! {0} IS FAILING\n" +
+                    wrongnessMessage = string.Format("Something's Wrong! {0} IS FAILING\n" +
                                                             "Found problem when: {1}\n" +
                                                             "details: {2}",
                                                             action.Name, action.GetActionDetails(), ex.Message);
@@ -70,7 +70,7 @@ namespace SomethingsWrong
             }
             catch (Exception ex)
             {
-                wrongnessMessage = string.Format("Somethings Wrong! {0} IS FAILING\n" +
+                wrongnessMessage = string.Format("Something's Wrong! {0} IS FAILING\n" +
                                                             "Found problem when: {1}\n" +
                                                             "details: {2}",
                                                             action.Name, action.GetActionDetails(), ex.Message);
