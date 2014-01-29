@@ -1,14 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SomethingsWrong.Lib;
 using System.Media;
+using NLog;
+using SomethingsWrong.Lib;
 
-namespace SomethingsWrong
+namespace SomethingsWrong.Hardware
 {
     public class SoundAction : AlertAction
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public SoundAction()
             : base(AlertType.Sound)
         {
@@ -16,6 +18,8 @@ namespace SomethingsWrong
         
         public override void Start(MonitorAction monitorAction)
         {
+            Logger.Info("ENABLING sound alarm: " + ListFiles(monitorAction.SoundFiles));
+
             FileInfo file = GetRandomSoundFile(monitorAction.SoundFiles);
             using (var player = new SoundPlayer(file.FullName))
             {
@@ -27,6 +31,16 @@ namespace SomethingsWrong
         {
             int index = new Random().Next(0, files.Count);
             return files[index];
+        }
+
+        private string ListFiles(IList<FileInfo> files)
+        {
+            string r = "";
+            foreach (var fileInfo in files)
+            {
+                r += fileInfo.Name + "; ";
+            }
+            return r;
         }
 
         public override void Stop()

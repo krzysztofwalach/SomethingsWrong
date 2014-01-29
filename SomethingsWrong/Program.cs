@@ -1,5 +1,7 @@
 ﻿using System.Configuration;
 using System.Linq;
+using NLog;
+using SomethingsWrong.Hardware;
 using SomethingsWrong.Lib;
 using System;
 using System.Collections.Generic;
@@ -13,18 +15,20 @@ namespace SomethingsWrong
     {
         private const string RelativePathToLibDir = @"..\..\..\..\Lib";
         private const string SwControllerFilename = "somethingswrong_controller.exe";
-        private const int CheckIntervalInSeconds = 15;
+        private static readonly int CheckIntervalInSeconds = int.Parse(ConfigurationManager.AppSettings["CheckIntervalInSeconds"]);
 
         private static readonly int BuildFailedLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["buildFailedLightAlarmDurationInSeconds"]);
         static readonly int HttpFailedLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["httpFailedLightAlarmDurationInSeconds"]);
         static readonly int StandupTimeLightAlarmDurationInSeconds = int.Parse(ConfigurationManager.AppSettings["standupTimeLightAlarmDurationInSeconds"]);
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static void Main()
         {
             FileInfo controllerFile = GetControllerFile();
             if (!controllerFile.Exists)
             {
-                MultiLogger.Error("Something's Wrong controller file cannot be found at: " + controllerFile.FullName);
+                Logger.Error("Something's Wrong controller file cannot be found at: " + controllerFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -32,7 +36,7 @@ namespace SomethingsWrong
             FileInfo buildAlarmSoundFile = GetSoundFilename("buildAlarm.wav");
             if (!buildAlarmSoundFile.Exists)
             {
-                MultiLogger.Error("Build alarm sound file do not exist: " + buildAlarmSoundFile.FullName);
+                Logger.Error("Build alarm sound file do not exist: " + buildAlarmSoundFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -40,7 +44,7 @@ namespace SomethingsWrong
             FileInfo httpAlarmSoundFile = GetSoundFilename("httpAlarm.wav");
             if (!httpAlarmSoundFile.Exists)
             {
-                MultiLogger.Error("HTTP alarm sound file do not exist: " + httpAlarmSoundFile.FullName);
+                Logger.Error("HTTP alarm sound file do not exist: " + httpAlarmSoundFile.FullName);
                 Console.ReadKey();
                 return;
             }
@@ -48,7 +52,7 @@ namespace SomethingsWrong
             var standupSoundFiles = GetSoundsFilesFromSubDirectory("standupAlarms");
             if (!standupSoundFiles.Any())
             {
-                MultiLogger.Error("Didn't find any standup sound files in subdirectory /standupAlarms");
+                Logger.Error("Didn't find any standup sound files in subdirectory /standupAlarms");
                 Console.ReadKey();
                 return;
             }
@@ -111,16 +115,17 @@ namespace SomethingsWrong
             var detector = new WrongnessDetector(monitorActions, alertActions);
             while (true)
             {
+                Console.WriteLine("Loop started");
                 var date = DateTime.Now;
                 if (Calendar.IsHoliday(date))
                 {
-                    MultiLogger.Info("It's holidays day, sleeping for 10 minutes...");
+                    Logger.Debug("It's holidays day, sleeping for 10 minutes...");
                     Thread.Sleep(1000 * 60 * 10);
                     continue;
                 }
                 if (!Calendar.TimeIsInsideWorkingHours(date))
                 {
-                    MultiLogger.Info("The time is outside office hours, sleeping for 10 minutes...");
+                    Logger.Debug("The time is outside office hours, sleeping for 10 minutes...");
                     Thread.Sleep(1000 * 60 * 10);
                     continue;
                 }
@@ -131,7 +136,7 @@ namespace SomethingsWrong
                 }
                 catch(Exception ex)
                 {
-                    MultiLogger.Error(ex.Message);
+                    Logger.Error(ex.Message);
                 }
                 Thread.Sleep(CheckIntervalInSeconds * 1000);
             }

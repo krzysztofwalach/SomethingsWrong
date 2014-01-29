@@ -5,11 +5,13 @@ namespace SomethingsWrong.Lib
 {
     public class Calendar
     {
+        private static readonly TimeSpan OfficeHoursStart = new TimeSpan(8, 20, 0);
+        private static readonly TimeSpan OfficeHoursEnd = new TimeSpan(17, 0, 0);
         private static readonly IList<DateTime> FreeNonHolidayDays = BuildFreeNonHolidayDays();
 
         public static bool TimeIsInsideWorkingHours(DateTime time)
         {
-            return new TimeSpan(8, 30, 0) <= time.TimeOfDay && time.TimeOfDay <= new TimeSpan(18, 0, 0);
+            return OfficeHoursStart <= time.TimeOfDay && time.TimeOfDay <= OfficeHoursEnd;
         }
 
         public static bool IsHoliday(DateTime date)

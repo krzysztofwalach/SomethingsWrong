@@ -40,14 +40,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlertType.cs" />
-    <Compile Include="MultiLogger.cs" />
-    <Compile Include="SoundAction.cs" />
-    <Compile Include="FlashLightAction.cs" />
-    <Compile Include="AlertAction.cs" />
+    <Compile Include="Hardware\SoundAction.cs" />
+    <Compile Include="Hardware\FlashLightAction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WrongnessDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SomethingsWrong.Lib\SomethingsWrong.Lib.csproj">

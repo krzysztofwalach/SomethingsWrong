@@ -1,14 +1,16 @@
-﻿using SomethingsWrong.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using NLog;
 
-namespace SomethingsWrong
+namespace SomethingsWrong.Lib
 {
     public class WrongnessDetector
     {
         private readonly IList<MonitorAction> _monitorActions;
         private readonly IList<AlertAction> _alertActions;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public WrongnessDetector(IList<MonitorAction> monitorActions, IList<AlertAction> alertActions)
         {
@@ -30,7 +32,7 @@ namespace SomethingsWrong
 
             if(allActionsPassed)
             {
-                MultiLogger.Debug("Everything's OK");
+                Logger.Debug("Everything's OK");
                 StopRunningAlerts();
             }
         }
@@ -56,7 +58,7 @@ namespace SomethingsWrong
             {
                 if(!action.FailAtNetworkException)
                 {
-                    MultiLogger.Debug("skipping WebException for " + action.Name);
+                    Logger.Debug("skipping WebException for " + action.Name);
                     passed = true;
                 }
                 else
@@ -81,18 +83,18 @@ namespace SomethingsWrong
             {
                 if (!action.MarkedAsFailing) //first fail
                 {
-                    MultiLogger.MonitoredAppFail(action.Name + " started to fail");
+                    Logger.Info(action.Name + " started to fail");
                     action.MarkedAsFailing = true;
-                    MultiLogger.MonitoredAppFail(wrongnessMessage);
+                    Logger.Info(wrongnessMessage);
                     StartAlerts(action);
                 }
-                MultiLogger.MonitoredAppFail(action.GetActionDetails() + " continue failing");
+                Logger.Info(action.GetActionDetails() + " continue failing");
                 return false;
             }
 
             if(action.MarkedAsFailing)
             {
-                MultiLogger.MonitoredAppFail(action.Name + " stopped failing");
+                Logger.Info(action.Name + " stopped failing");
                 action.MarkedAsFailing = false;
             }            
             return true;

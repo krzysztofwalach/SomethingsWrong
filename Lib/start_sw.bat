@@ -1,0 +1,1 @@
+devcon\i386\devcon.exe enable "USB\VID_16C0*"

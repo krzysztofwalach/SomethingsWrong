@@ -1,15 +1,18 @@
-﻿
-using SomethingsWrong.Lib;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using NLog;
+using SomethingsWrong.Lib;
 
-namespace SomethingsWrong
+namespace SomethingsWrong.Hardware
 {
     public class FlashLightAction : AlertAction
     {
         private readonly FileInfo _controllerFile;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
 
         public FlashLightAction(FileInfo controllerFile) : base(AlertType.Light)
         {
@@ -21,6 +24,8 @@ namespace SomethingsWrong
 
         public override void Start(MonitorAction monitorAction)
         {
+            Logger.Info("ENABLING light alarm");
+
             lock (StatusLockingObj)
             {
                 if (!_isRunning)
@@ -42,6 +47,7 @@ namespace SomethingsWrong
                 {                    
                     lock (StatusLockingObj)
                     {
+                        Logger.Info("Disabling light alarm (timeout)");
                         Exec("off");
                         _isRunning = false;
                         return;
@@ -53,6 +59,8 @@ namespace SomethingsWrong
 
         public override void Stop()
         {
+            Logger.Info("Disabling light alarm (requested)");
+
             lock (StatusLockingObj)
             {
                 if (_isRunning)
@@ -76,7 +84,7 @@ namespace SomethingsWrong
             }
             catch(Exception ex)
             {
-                MultiLogger.Error("Failed to execute controller process, details: " + ex);
+                Logger.Error("Failed to execute controller process, details: " + ex);
             }            
         }
     }
