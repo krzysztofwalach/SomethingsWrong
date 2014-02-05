@@ -113,9 +113,10 @@ namespace SomethingsWrong
             }          
 
             var detector = new WrongnessDetector(monitorActions, alertActions);
+            Console.WriteLine("Loop started");
             while (true)
             {
-                Console.WriteLine("Loop started");
+                
                 var date = DateTime.Now;
                 if (Calendar.IsHoliday(date))
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SomethingsWrong.Lib
 {
@@ -25,8 +26,8 @@ namespace SomethingsWrong.Lib
         private static IList<DateTime> BuildFreeNonHolidayDays()
         {
             var results = new List<DateTime>();
-            string[] strs =
-                @"
+
+            string[] strs = @"
 1.1.2014
 6.1.2014
 21.4.2014
@@ -38,13 +39,13 @@ namespace SomethingsWrong.Lib
 11.11.2014
 24.12.2014
 25.12.2014
-26.12.2014".Split('\n');
+26.12.2014".Replace("\n",",").Replace("\r", "").Split(',');
 
             foreach (var str in strs)
             {
                 try
                 {
-                    results.Add(DateTime.Parse(str));
+                    results.Add(DateTime.ParseExact(str, "d.M.yyyy",CultureInfo.InvariantCulture));
                 }
                 catch
                 {
