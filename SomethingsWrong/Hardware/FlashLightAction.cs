@@ -20,7 +20,7 @@ namespace SomethingsWrong.Hardware
         }
         
         
-        private static Thread alarmThread;
+        private static Thread _alarmThread;
 
         public override void Start(MonitorAction monitorAction)
         {
@@ -31,8 +31,8 @@ namespace SomethingsWrong.Hardware
                 if (!_isRunning)
                 {
                     DateTime stopTime = DateTime.Now + new TimeSpan(0, 0, monitorAction.LightAlarmDurationInSeconds);
-                    alarmThread = new Thread(() => StopAlarmAtGivenTime(stopTime));
-                    alarmThread.Start();
+                    _alarmThread = new Thread(() => StopAlarmAtGivenTime(stopTime));
+                    _alarmThread.Start();
                     _isRunning = true;
                     Exec("on");
                 }
@@ -66,11 +66,11 @@ namespace SomethingsWrong.Hardware
                 if (_isRunning)
                 {
                     _isRunning = false;
-                    if(alarmThread != null && alarmThread.IsAlive)
+                    if(_alarmThread != null && _alarmThread.IsAlive)
                     {
-                        alarmThread.Abort();
+                        _alarmThread.Abort();
                     }
-                    alarmThread = null;
+                    _alarmThread = null;
                     Exec("off");                    
                 }
             }
@@ -80,7 +80,28 @@ namespace SomethingsWrong.Hardware
         {
             try
             {
-                Process.Start(_controllerFile.FullName, param);
+                var proc = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _controllerFile.FullName,
+                        Arguments = param,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    }
+                };
+                proc.Start();
+                proc.WaitForExit(1000 * 60);
+
+                int code = proc.ExitCode;
+                //Logger.Info("Controller process exited with code: " + code);
+                Logger.Info("Controller process exited with code: " + code);
+
+                if (code != 0)
+                {
+                    Logger.Error("Controller process exited with non zero code!");
+                }
             }
             catch(Exception ex)
             {

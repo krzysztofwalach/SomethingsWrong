@@ -78,13 +78,6 @@ namespace SomethingsWrong
                         HttpFailedLightAlarmDurationInSeconds,
                         new List<FileInfo> {httpAlarmSoundFile},
                         true));
-                //monitorActions.Add(
-                //    new HttpCheckAction(new Uri("https://insideplus.local.abb.com/Monitoring/getheartbeat"),
-                //        "I am alive!",
-                //        "https://insideplus.local.abb.com",
-                //        HttpFailedLightAlarmDurationInSeconds,
-                //        httpAlarmSoundFile,
-                //        true));
             }
             if (bool.Parse(ConfigurationManager.AppSettings["EnableStandupCheck"]))
             {
