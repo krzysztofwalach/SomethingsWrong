@@ -62,7 +62,7 @@ namespace SomethingsWrong
             {
                 monitorActions.Add(
                     new TCBuildStatusCheckAction(
-                        new Uri("http://pllod-v-1abb002.pl.abb.com:7080/guestAuth/app/rest/builds/?locator=buildType:Inside_CiAndDeployToAmazon"),
+                        new Uri("http://pllod-v-isdc103.pl.abb.com:8090/guestAuth/app/rest/builds/?locator=buildType:Inside_Ci"),
                         "/builds/build[1]",
                         "TC: Inside+",
                         BuildFailedLightAlarmDurationInSeconds,
